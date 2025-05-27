@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Modern Premium Video Player</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;600&display=swap" rel="stylesheet" />
+<style>
+  /* Reset & base */
+  * {
+    margin: 0; padding: 0; box-sizing: border-box;
+  }
+  body, html {
+    height: 100%;
+    background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+    font-family: 'Roboto', sans-serif;
+    color: #e94560;
+    overflow: hidden;
+  }
+  /* Container video */
+  .video-container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #000;
+  }
+  video {
+    width: 100%;
+    max-height: 100vh;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  }
+
+  /* Logo */
+  .logo {
+    position: absolute;
+    top: 50px; /* Jarak dari atas */
+    left: 20px; /* Jarak dari kiri */
+    width: 100px; /* Atur lebar logo */
+    z-index: 20; /* Pastikan logo di atas elemen lain */
+  }
+
+  /* Glassmorphism Buttons */
+  .btn-glass {
+    position: fixed;
+    backdrop-filter: blur(12px);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 20px;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s ease, transform 0.25s ease, box-shadow 0.3s ease;
+    font-weight: 600;
+    user-select: none;
+  }
+  .btn-glass:hover {
+    background: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 20px rgba(0, 255, 255, 0.5);
+    transform: scale(1.05);
+  }
+
+  /* Back button */
+  .back-btn {
+    top: 20px;
+    left: 20px;
+    width: 48px;
+    height: 48px;
+    z-index: 30; /* Pastikan tombol kembali di atas elemen lain */
+  }
+  .back-btn svg {
+    width: 24px;
+    height: 24px;
+    stroke: #e94560;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
+  }
+
+  /* Unmute button */
+  .unmute-btn {
+    top: 20px;
+    right: 20px;
+    font-size: 14px;
+    min-width: 80px;
+    display: none; /* Awalnya disembunyikan */
+    z-index: 30; /* Pastikan tombol unmute di atas elemen lain */
+  }
+
+  /* Telegram button */
+  .telegram-btn {
+    position: absolute; /* Mengatur posisi absolut */
+    bottom: 20px; /* Jarak dari bawah */
+    left: 50%; /* Posisi tengah */
+    transform: translateX(-50%); /* Menggeser ke kiri setengah lebar tombol */
+    backdrop-filter: blur(12px);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 20px;
+    padding: 12px 16px;
+    font-weight: 600;
+    text-decoration: none;
+    color: #e94560; /* Warna teks */
+    box-shadow: 0 8px 15px rgba(255, 255, 255, 0.5);
+    transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+    z-index: 30; /* Pastikan tombol Telegram di atas elemen lain */
+  }
+  .telegram-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 10px 20px rgba(255, 255, 255, 0.7);
+    transform: scale(1.05);
+  }
+
+  /* Overlay clickable */
+  .click-overlay {
+    position: absolute;
+    inset: 0;
+    cursor: pointer;
+    z-index: 10;
+  }
+
+  /* Loader */
+  .loader {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    border: 5px solid rgba(255, 255, 255, 0.15);
+    border-top: 5px solid #00bfff;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1.5s linear infinite;
+    z-index: 15;
+    display: none;
+  }
+  @keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+  }
+</style>
+</head>
+<body>
+
+<div class="video-container">
+    <img src="https://doodstream.com/upload-data/player_logo/logo_453422.png?r=ed4srlalt="Logo" class="logo"> <!-- Ganti dengan path logo Anda -->
+    <video controls autoplay playsinline id="mainVideo">
+        <source src="https://qu.ax/eMogz.mp4" type="video/mp4">
+    </video>
+    <div class="click-overlay" onclick="showAd()"></div>
+    <div class="loader" id="loader"></div>
+</div>
+
+<!-- Back button -->
+<a href="index.html" class="btn-glass back-btn" aria-label="Back to Home">
+    <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+</a>
+
+<!-- Unmute button -->
+<button class="btn-glass unmute-btn" id="unmuteBtn">Unmute</button>
+
+<!-- Telegram button -->
+<a href="https://t.me/+E6mHtlw89Xw1NjE9" target="_blank" rel="noopener" class="telegram-btn" aria-label="Join Telegram">
+    Join Telegram
+</a>
+
+<script>
+  const video = document.getElementById('mainVideo');
+  const unmuteBtn = document.getElementById('unmuteBtn');
+  const loader = document.getElementById('loader');
+
+  let loaderTimeout;
+
+  function showVideo() {
+    loader.style.display = 'none';
+    video.style.visibility = 'visible';
+  }
+
+  // Show loader until video can play through
+  video.style.visibility = 'hidden';
+  loader.style.display = 'block';
+
+  video.addEventListener('canplaythrough', showVideo);
+
+  // Fallback: force show video after 1 seconds
+  loaderTimeout = setTimeout(() => {
+    showVideo();
+  }, 1000);
+
+  // Autoplay + sound fallback
+  async function handleAutoplay() {
+    try {
+      await video.play();
+      unmuteBtn.style.display = 'none'; // Sembunyikan tombol jika video dapat diputar
+    } catch {
+      video.muted = true; // Mute video jika autoplay gagal
+      try {
+        await video.play();
+        unmuteBtn.style.display = 'inline-flex'; // Tampilkan tombol unmute
+      } catch {
+        console.warn('Autoplay failed.');
+      }
+    }
+  }
+
+  unmuteBtn.addEventListener('click', () => {
+    video.muted = false;
+    unmuteBtn.style.display = 'none'; // Sembunyikan tombol setelah unmute
+  });
+
+  video.addEventListener('volumechange', () => {
+    unmuteBtn.style.display = video.muted ? 'inline-flex' : 'none'; // Tampilkan tombol jika video teredam
+  });
+
+  // Unified ad function
+  function showAd() {
+    const newTab = window.open("https://marinadelifestyle.com/i8jhy9jaz?key=2fde7e1d4217430daf850c23ffd890b5", "_blank");
+    if (!newTab || newTab.closed) {
+      window.location.href = "https://marinadelifestyle.com/i8jhy9jaz?key=2fde7e1d4217430daf850c23ffd890b5";
+    }
+    window.focus();
+  }
+
+  // Click anywhere to show ad
+  document.querySelector('.click-overlay').addEventListener('click', showAd);
+
+  // Show ad when video ends
+  video.addEventListener('ended', showAd);
+
+  // Start autoplay
+  handleAutoplay();
+</script>
+
+</body>
+</html>
